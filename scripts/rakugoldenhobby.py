@@ -31,7 +31,7 @@ class rakugoldenhobbyListParser():
             print(pid)
             if master_id != None and pid != None:
                 product['master_id'] = master_id
-                title = title.replace('ポケモンカード','')
+                title = title.replace('ポケモンカードゲーム','')
                 product['market'] = 'rakugoldenhobby'
                 product['link'] = self.generateLink(pid)
                 product['price'] = int(item.find('span', class_='category_itemprice').text.strip().replace('円', '').replace(',', ''))

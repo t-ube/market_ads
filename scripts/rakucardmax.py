@@ -21,11 +21,15 @@ class rakucardmaxListParser():
     def getItemList(self):
         soup = BeautifulSoup(self.__html, 'html.parser')
         l = list()
-
+        print('-------------')
+        print(self.__html)
+        print('-------------')
+        print(soup)
         # スクレイピングデータから商品情報を抽出
         for item in soup.find_all('td', {'style': 'padding:0px 5px 0px 10px;'}):
             product = {}
             title = item.find('a', class_='category_itemnamelink').text.strip()
+            print(title)
             master_id = self.generateMasterId(title)
             link = item.find('a', class_='category_itemnamelink')['href']
             pid = self.generatePid(link)

@@ -34,7 +34,10 @@ class rakucardmaxListParser():
             print(pid)
             if master_id != None and pid != None:
                 product['master_id'] = master_id
-                title = title.replace('ポケモンカード','')
+                title = title.replace('【ポケモンカード】','')
+                title = title.replace('　',' ')
+                title = title.replace('【','')
+                title = title.replace('】','')
                 product['market'] = 'rakucardmax'
                 product['link'] = self.generateLink(pid)
                 product['price'] = int(item.find('span', class_='category_itemprice').text.strip().replace('円', '').replace(',', ''))

@@ -116,7 +116,6 @@ class rakugoldenhobbyCsvBot():
         searchCsv = rakugoldenhobbySearchCsv(out_dir)
         info = self.getPageInfo(page)
         time.sleep(10)
-        print(info['url'])
         if info['url'] != None:
             self.getResultPageNormal(drvWrapper.getDriver(), info['url'])
             try:

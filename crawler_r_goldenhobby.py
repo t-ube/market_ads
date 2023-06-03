@@ -32,10 +32,10 @@ dataDir = './data'
 for page in range(rakugoldenhobbyBot.getPageCount()):
     wrapper = wrap.seleniumDriverWrapper()
     wrapper.begin(webdriver)
-    batch_items = []
     rakugoldenhobbyBot.download(wrapper, dataDir, page)
     wrapper.end()
 
+batch_items = []
 df = loader.getUniqueRecodes(dataDir)
 records = df.to_dict(orient='records')
 batch_items = editor.getAffiliateItem(records)

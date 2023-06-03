@@ -118,28 +118,26 @@ class rakucardmaxSearchCsv():
         df.to_csv(self.__file, index=False, encoding='utf_8_sig')
 
 class rakucardmaxCsvBot():
-    def download(self, drvWrapper, out_dir):
+    def download(self, drvWrapper, out_dir, page):
         # カード一覧へ移動
         Path(out_dir).mkdir(parents=True, exist_ok=True)
         searchCsv = rakucardmaxSearchCsv(out_dir)
-        for page in range(5):
-            url = self.getUrl(page)
-            if url != None:
-                time.sleep(10)
-                print(url)
-                self.getResultPageNormal(drvWrapper.getDriver(), url)
-                try:
-                    drvWrapper.getCustomWait(10).until(EC.visibility_of_all_elements_located((By.CLASS_NAME,'risfAllPages')))
-                    listHtml = drvWrapper.getDriver().page_source.encode('utf-8')
-                    parser = rakucardmaxListParser(listHtml)
-                    l = parser.getItemList()
-                    for item in l:
-                        searchCsv.add(item)
-                        print(item)
-                except TimeoutException as e:
-                    print("TimeoutException")
-                except Exception as e:
-                    print(traceback.format_exc())
+        url = self.getUrl(page)
+        if url != None:
+            time.sleep(10)
+            self.getResultPageNormal(drvWrapper.getDriver(), url)
+            try:
+                drvWrapper.getCustomWait(10).until(EC.visibility_of_all_elements_located((By.CLASS_NAME,'risfAllPages')))
+                listHtml = drvWrapper.getDriver().page_source.encode('utf-8')
+                parser = rakucardmaxListParser(listHtml)
+                l = parser.getItemList()
+                for item in l:
+                    searchCsv.add(item)
+                    print(item)
+            except TimeoutException as e:
+                print("TimeoutException")
+            except Exception as e:
+                print(traceback.format_exc())
         searchCsv.save()
 
     def getUrl(self, page: int):
@@ -158,6 +156,9 @@ class rakucardmaxCsvBot():
                 if page == 4: p = '3'
                 return 'https://item.rakuten.co.jp/cardmax/c/'+keyword+'/?p='+p+'&s=3&i=1#risFil'
         return None
+
+    def getPageCount(self):
+        return 5
         
     def getResultPageNormal(self, driver, url):
         print(url)
@@ -167,51 +168,3 @@ class rakucardmaxCsvBot():
             print("WebDriverException")
         except Exception as e:
             print(traceback.format_exc())
-
-class rakucardmaxCsvBotV2():
-    def download(self, out_dir):
-        # カード一覧へ移動
-        Path(out_dir).mkdir(parents=True, exist_ok=True)
-        searchCsv = rakucardmaxSearchCsv(out_dir)
-        for page in range(1):
-            url = self.getUrl(page)
-            if url != None:
-                time.sleep(10)
-                print(url)
-                try:
-                    response = requests.get(url, timeout=20)
-                    response.raise_for_status()
-                    html = response.content
-                    parser = rakucardmaxListParser(html)
-                    l = parser.getItemList()
-                    for item in l:
-                        searchCsv.add(item)
-                        print(item)
-                except requests.exceptions.HTTPError as e:
-                    if response.status_code == 503:
-                        print("503エラー：サービスが利用できません")
-                    else:
-                        print("HTTPエラーが発生しました:", str(e))
-                except requests.exceptions.Timeout:
-                    print("タイムアウトエラー：リクエストがタイムアウトしました")
-                except requests.exceptions.RequestException as e:
-                    print("その他のリクエストエラーが発生しました:", str(e))
-        searchCsv.save()
-
-    def getUrl(self, page: int):
-        if page < 2:
-            keyword = ""
-            if page == 0: keyword = '0000001142'# 強化拡張パック
-            if page == 1: keyword = '0000001249'# ハイクラスパック
-            return 'https://item.rakuten.co.jp/cardmax/c/'+keyword+'/?s=3&i=1#risFil'
-        else:
-            keyword = ""
-            p = ""
-            if page >= 2 and page <= 4:
-                keyword = '0000001125'# 拡張パック
-                if page == 2: p = '1'
-                if page == 3: p = '2'
-                if page == 4: p = '3'
-                return 'https://item.rakuten.co.jp/cardmax/c/'+keyword+'/?p='+p+'&s=3&i=1#risFil'
-        return None
-

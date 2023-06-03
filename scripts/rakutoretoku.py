@@ -109,28 +109,26 @@ class rakutoretokuSearchCsv():
         df.to_csv(self.__file, index=False, encoding='utf_8_sig')
 
 class rakutoretokuCsvBot():
-    def download(self, drvWrapper, out_dir):
+    def download(self, drvWrapper, out_dir, page):
         # カード一覧へ移動
         Path(out_dir).mkdir(parents=True, exist_ok=True)
         searchCsv = rakutoretokuSearchCsv(out_dir)
-        for page in range(10):
-            url = self.getUrl(page)
-            if url != None:
-                time.sleep(10)
-                print(url)
-                self.getResultPageNormal(drvWrapper.getDriver(), url)
-                try:
-                    drvWrapper.getWait().until(EC.visibility_of_all_elements_located((By.CLASS_NAME,'risfAllPages')))
-                    listHtml = drvWrapper.getDriver().page_source.encode('utf-8')
-                    parser = rakutoretokuListParser(listHtml)
-                    l = parser.getItemList()
-                    for item in l:
-                        searchCsv.add(item)
-                        print(item)
-                except TimeoutException as e:
-                    print("TimeoutException")
-                except Exception as e:
-                    print(traceback.format_exc())
+        url = self.getUrl(page)
+        if url != None:
+            time.sleep(10)
+            self.getResultPageNormal(drvWrapper.getDriver(), url)
+            try:
+                drvWrapper.getWait().until(EC.visibility_of_all_elements_located((By.CLASS_NAME,'risfAllPages')))
+                listHtml = drvWrapper.getDriver().page_source.encode('utf-8')
+                parser = rakutoretokuListParser(listHtml)
+                l = parser.getItemList()
+                for item in l:
+                    searchCsv.add(item)
+                    print(item)
+            except TimeoutException as e:
+                print("TimeoutException")
+            except Exception as e:
+                print(traceback.format_exc())
         searchCsv.save()
 
     def getUrl(self, page: int):
@@ -154,6 +152,9 @@ class rakutoretokuCsvBot():
                 if page == 9: p = '3'
                 return 'https://item.rakuten.co.jp/toretoku/c/'+keyword+'/?p='+p+'&s=3&i=1#risFil'
         return None
+
+    def getPageCount(self):
+        return 10
         
     def getResultPageNormal(self, driver, url):
         print(url)

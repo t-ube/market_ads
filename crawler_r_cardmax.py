@@ -21,20 +21,23 @@ supabase.postgrest.auth(service_key)
 
 get_driver = GetChromeDriver()
 get_driver.install()
-wrapper = wrap.seleniumDriverWrapper()
-wrapper.begin(webdriver)
+
 rakucardmaxBot = rakucardmax.rakucardmaxCsvBot()
 loader = marcketCalc.rawLoader()
-
 writer = supabaseUtil.batchWriter()
 editor = supabaseUtil.batchEditor()
 
-batch_items = []
 dataDir = './data'
-rakucardmaxBot.download(wrapper,dataDir)
+
+for page in range(rakucardmaxBot.getPageCount()):
+    wrapper = wrap.seleniumDriverWrapper()
+    wrapper.begin(webdriver)
+    rakucardmaxBot.download(wrapper,dataDir,page)
+    wrapper.end()
+
+batch_items = []
 df = loader.getUniqueRecodes(dataDir)
 records = df.to_dict(orient='records')
 batch_items = editor.getAffiliateItem(records)
 writer.write(supabase, "affiliate_item", batch_items)
 
-wrapper.end()

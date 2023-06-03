@@ -33,7 +33,7 @@ class rakucardmaxListParser():
             print(pid)
             if master_id != None and pid != None:
                 product['master_id'] = master_id
-                title = title.replace('【ポケモンカード】','')
+                title = title.replace('【ポケモンカードゲーム】','')
                 title = title.replace('　',' ')
                 title = title.replace('【','')
                 title = title.replace('】','')

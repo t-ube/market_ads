@@ -24,9 +24,12 @@ class rakugoldenhobbyListParser():
         for item in soup.find_all('td', {'style': 'padding:0px 5px 0px 10px;'}):
             product = {}
             title = item.find('a', class_='category_itemnamelink').text.strip()
+            print(title)
             master_id = self.generateMasterId(title,cn)
+            print(master_id)
             link = item.find('a', class_='category_itemnamelink')['href']
             pid = self.generatePid(link)
+            print(pid)
             if master_id != None and pid != None:
                 product['master_id'] = master_id
                 title = title.replace('ポケモンカード','')

@@ -19,9 +19,8 @@ class rakutoretokuListParser():
 
     def getItemList(self):
         soup = BeautifulSoup(self.__html, 'html.parser')
+        print(soup)
         l = list()
-
-        # スクレイピングデータから商品情報を抽出
         for item in soup.find_all('td', {'style': 'padding:0px 5px 0px 10px;'}):
             product = {}
             title = item.find('a', class_='category_itemnamelink').text.strip()
@@ -117,6 +116,8 @@ class rakutoretokuCsvBot():
         for page in range(10):
             url = self.getUrl(page)
             if url != None:
+                time.sleep(10)
+                print(url)
                 self.getResultPageNormal(drvWrapper.getDriver(), url)
                 try:
                     drvWrapper.getWait().until(EC.visibility_of_all_elements_located((By.CLASS_NAME,'risfAllPages')))

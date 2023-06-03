@@ -22,7 +22,6 @@ class rakucardmaxListParser():
         soup = BeautifulSoup(self.__html, 'html.parser')
         l = list()
         print(soup)
-        # スクレイピングデータから商品情報を抽出
         for item in soup.find_all('td', {'style': 'padding:0px 5px 0px 10px;'}):
             product = {}
             title = item.find('a', class_='category_itemnamelink').text.strip()
@@ -119,6 +118,8 @@ class rakucardmaxCsvBot():
         for page in range(5):
             url = self.getUrl(page)
             if url != None:
+                time.sleep(10)
+                print(url)
                 self.getResultPageNormal(drvWrapper.getDriver(), url)
                 try:
                     drvWrapper.getCustomWait(10).until(EC.visibility_of_all_elements_located((By.CLASS_NAME,'risfAllPages')))
@@ -168,6 +169,7 @@ class rakucardmaxCsvBotV2():
         for page in range(1):
             url = self.getUrl(page)
             if url != None:
+                time.sleep(10)
                 print(url)
                 try:
                     response = requests.get(url, timeout=20)

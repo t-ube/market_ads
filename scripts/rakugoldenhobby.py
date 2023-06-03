@@ -19,9 +19,8 @@ class rakugoldenhobbyListParser():
 
     def getItemList(self,cn):
         soup = BeautifulSoup(self.__html, 'html.parser')
+        print(soup)
         l = list()
-
-        # スクレイピングデータから商品情報を抽出
         for item in soup.find_all('td', {'style': 'padding:0px 5px 0px 10px;'}):
             product = {}
             title = item.find('a', class_='category_itemnamelink').text.strip()
@@ -115,6 +114,8 @@ class rakugoldenhobbyCsvBot():
         searchCsv = rakugoldenhobbySearchCsv(out_dir)
         for page in range(6):
             info = self.getPageInfo(page)
+            time.sleep(10)
+            print(info['url'])
             if info['url'] != None:
                 self.getResultPageNormal(drvWrapper.getDriver(), info['url'])
                 try:

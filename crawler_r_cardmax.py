@@ -23,7 +23,7 @@ get_driver = GetChromeDriver()
 get_driver.install()
 wrapper = wrap.seleniumDriverWrapper()
 wrapper.begin(webdriver)
-rakucardmaxBot = rakucardmax.rakucardmaxCsvBotV2()
+rakucardmaxBot = rakucardmax.rakucardmaxCsvBot()
 loader = marcketCalc.rawLoader()
 
 writer = supabaseUtil.batchWriter()
@@ -31,7 +31,7 @@ editor = supabaseUtil.batchEditor()
 
 batch_items = []
 dataDir = './data'
-rakucardmaxBot.download(dataDir)
+rakucardmaxBot.download(wrapper,dataDir)
 df = loader.getUniqueRecodes(dataDir)
 records = df.to_dict(orient='records')
 batch_items = editor.getAffiliateItem(records)

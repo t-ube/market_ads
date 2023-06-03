@@ -134,7 +134,7 @@ class rakugoldenhobbyCsvBot():
                 print(traceback.format_exc())
         searchCsv.save()
 
-    def getPageCount():
+    def getPageCount(self):
         return 6
 
     def getPageInfo(self, page: int):

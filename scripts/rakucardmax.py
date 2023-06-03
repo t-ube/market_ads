@@ -167,18 +167,20 @@ class rakucardmaxCsvBotV2():
         for page in range(5):
             url = self.getUrl(page)
             if url != None:
+                print(url)
                 try:
-                    response = requests.get(url)
+                    response = requests.get(url, timeout=5)
+                    response.raise_for_status()
                     html = response.content
                     parser = rakucardmaxListParser(html)
                     l = parser.getItemList()
                     for item in l:
                         searchCsv.add(item)
                         print(item)
-                except TimeoutException as e:
-                    print("TimeoutException")
-                except Exception as e:
-                    print(traceback.format_exc())
+                except requests.exceptions.Timeout:
+                    print("タイムアウトエラー：リクエストがタイムアウトしました")
+                except requests.exceptions.RequestException as e:
+                    print("その他のリクエストエラーが発生しました:", str(e))
         searchCsv.save()
 
     def getUrl(self, page: int):

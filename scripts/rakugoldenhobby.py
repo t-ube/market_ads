@@ -122,7 +122,6 @@ class rakugoldenhobbyCsvBot():
             try:
                 drvWrapper.getCustomWait(10).until(EC.visibility_of_all_elements_located((By.CLASS_NAME,'risfAllPages')))
                 listHtml = drvWrapper.getDriver().page_source.encode('utf-8')
-                print(listHtml)
                 parser = rakugoldenhobbyListParser(listHtml)
                 l = parser.getItemList(info['cn'])
                 for item in l:

@@ -23,7 +23,7 @@ get_driver = GetChromeDriver()
 get_driver.install()
 wrapper = wrap.seleniumDriverWrapper()
 wrapper.begin(webdriver)
-rakucardmaxBot = rakucardmax.rakucardmaxCsvBot()
+rakucardmaxBot = rakucardmax.rakucardmaxCsvBotV2()
 loader = marcketCalc.rawLoader()
 
 writer = supabaseUtil.batchWriter()

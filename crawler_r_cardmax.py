@@ -31,7 +31,7 @@ editor = supabaseUtil.batchEditor()
 
 batch_items = []
 dataDir = './data'
-rakucardmaxBot.download(wrapper, dataDir)
+rakucardmaxBot.download(dataDir)
 df = loader.getUniqueRecodes(dataDir)
 records = df.to_dict(orient='records')
 batch_items = editor.getAffiliateItem(records)

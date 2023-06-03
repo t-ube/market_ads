@@ -164,11 +164,11 @@ class rakucardmaxCsvBot():
             print(traceback.format_exc())
 
 class rakucardmaxCsvBotV2():
-    def download(self, drvWrapper, out_dir):
+    def download(self, out_dir):
         # カード一覧へ移動
         Path(out_dir).mkdir(parents=True, exist_ok=True)
         searchCsv = rakucardmaxSearchCsv(out_dir)
-        for page in range(5):
+        for page in range(1):
             url = self.getUrl(page)
             if url != None:
                 print(url)
@@ -181,6 +181,11 @@ class rakucardmaxCsvBotV2():
                     for item in l:
                         searchCsv.add(item)
                         print(item)
+                except requests.exceptions.HTTPError as e:
+                    if response.status_code == 503:
+                        print("503エラー：サービスが利用できません")
+                    else:
+                        print("HTTPエラーが発生しました:", str(e))
                 except requests.exceptions.Timeout:
                     print("タイムアウトエラー：リクエストがタイムアウトしました")
                 except requests.exceptions.RequestException as e:

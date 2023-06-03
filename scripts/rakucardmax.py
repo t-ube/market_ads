@@ -169,7 +169,7 @@ class rakucardmaxCsvBotV2():
             if url != None:
                 print(url)
                 try:
-                    response = requests.get(url, timeout=5)
+                    response = requests.get(url, timeout=20)
                     response.raise_for_status()
                     html = response.content
                     parser = rakucardmaxListParser(html)

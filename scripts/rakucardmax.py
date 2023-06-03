@@ -27,8 +27,11 @@ class rakucardmaxListParser():
             title = item.find('a', class_='category_itemnamelink').text.strip()
             print(title)
             master_id = self.generateMasterId(title)
+            print(master_id)
             link = item.find('a', class_='category_itemnamelink')['href']
+            print(link)
             pid = self.generatePid(link)
+            print(pid)
             if master_id != None and pid != None:
                 product['master_id'] = master_id
                 title = title.replace('ポケモンカード','')

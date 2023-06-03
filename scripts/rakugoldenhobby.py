@@ -19,7 +19,6 @@ class rakugoldenhobbyListParser():
 
     def getItemList(self,cn):
         soup = BeautifulSoup(self.__html, 'html.parser')
-        print(soup)
         l = list()
         for item in soup.find_all('td', {'style': 'padding:0px 5px 0px 10px;'}):
             product = {}
@@ -48,8 +47,8 @@ class rakugoldenhobbyListParser():
         match = re.search(pattern,title)
         if match:
             exp = match.group(1)
-            card_number = exp.group(2)
-            master_id = f"{set_code}_{card_number}_{cn}"
+            card_number = match.group(2)
+            master_id = f"{exp}_{card_number}_{cn}"
             return master_id.lower()
         else:
             return None
@@ -111,30 +110,32 @@ class rakugoldenhobbySearchCsv():
         df.to_csv(self.__file, index=False, encoding='utf_8_sig')
 
 class rakugoldenhobbyCsvBot():
-    def download(self, drvWrapper, out_dir):
+    def download(self, drvWrapper, out_dir, page):
         # カード一覧へ移動
         Path(out_dir).mkdir(parents=True, exist_ok=True)
         searchCsv = rakugoldenhobbySearchCsv(out_dir)
-        for page in range(6):
-            info = self.getPageInfo(page)
-            time.sleep(10)
-            print(info['url'])
-            if info['url'] != None:
-                self.getResultPageNormal(drvWrapper.getDriver(), info['url'])
-                try:
-                    drvWrapper.getCustomWait(10).until(EC.visibility_of_all_elements_located((By.CLASS_NAME,'risfAllPages')))
-                    listHtml = drvWrapper.getDriver().page_source.encode('utf-8')
-                    print(listHtml)
-                    parser = rakugoldenhobbyListParser(listHtml)
-                    l = parser.getItemList(info['cn'])
-                    for item in l:
-                        searchCsv.add(item)
-                        print(item)
-                except TimeoutException as e:
-                    print("TimeoutException")
-                except Exception as e:
-                    print(traceback.format_exc())
+        info = self.getPageInfo(page)
+        time.sleep(10)
+        print(info['url'])
+        if info['url'] != None:
+            self.getResultPageNormal(drvWrapper.getDriver(), info['url'])
+            try:
+                drvWrapper.getCustomWait(10).until(EC.visibility_of_all_elements_located((By.CLASS_NAME,'risfAllPages')))
+                listHtml = drvWrapper.getDriver().page_source.encode('utf-8')
+                print(listHtml)
+                parser = rakugoldenhobbyListParser(listHtml)
+                l = parser.getItemList(info['cn'])
+                for item in l:
+                    searchCsv.add(item)
+                    print(item)
+            except TimeoutException as e:
+                print("TimeoutException")
+            except Exception as e:
+                print(traceback.format_exc())
         searchCsv.save()
+
+    def getPageCount():
+        return 6
 
     def getPageInfo(self, page: int):
         url = None

@@ -46,13 +46,15 @@ class rakucardmaxListParser():
         return l
 
     def generateMasterId(self,title):
-        pattern = r'^(\w+).*?\(\w+\).*?\((\d+/\d+)\)'
+        pattern = r'【([0-9a-zA-Z]+)】.+\(([0-9a-zA-Z]{2,})/([0-9a-zA-Z/]{2,})\)'
         match = re.search(pattern,title)
         if match:
             set_code = match.group(1)
             card_number = match.group(2)
-            master_id = f"{set_code}_{card_number}"
-            master_id = master_id.replace('/','_')
+            card_all = match.group(3)
+            card_all = card_all.replace('M','')
+            master_id = f"{set_code}_{card_number}_{card_all}"
+            master_id = master_id.replace('/','_-')
             return master_id.lower()
         else:
             return None
